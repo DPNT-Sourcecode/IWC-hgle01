@@ -91,6 +91,9 @@ class Queue:
         return timestamp
 
     def enqueue(self, item: TaskSubmission) -> int:
+        if item in self._queue:
+            return self.size
+
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
@@ -242,3 +245,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
