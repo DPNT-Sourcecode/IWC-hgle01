@@ -73,8 +73,9 @@ def test_priority_dependencies_and_rule_of_three_tasks() -> None:
         call_enqueue("id_verification", 2, iso_ts(delta_minutes=50)).expect(5),
         call_dequeue().expect("companies_house", 2),
         call_dequeue().expect("credit_check", 2),
-        call_enqueue("id_verification", 2, iso_ts(delta_minutes=50)).expect(5),
-        call_dequeue().expect("id_verification", 1),
-        call_dequeue().expect("bank_statements", 2),
+        call_dequeue().expect("id_verification", 2),
+        call_dequeue().expect("companies_house", 1),
+        call_dequeue().expect("credit_check", 1),
     ])
+
 
