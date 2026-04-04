@@ -34,5 +34,28 @@ def test_enqueue_multiple_users_multiple_providers() -> None:
 # 3. Dequeue -> {"user_id": 2, "provider": "bank_statements"}  
 # 4. Dequeue -> {"user_id": 1, "provider": "bank_statements"}  
 
-def test
+def test_timestamp_ordering() -> None:
+    run_queue([
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=5)).expect(1),
+        call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(2),
+        call_dequeue().expect("bank_statements", 2),
+        call_dequeue().expect("bank_statements", 1),
+    ])
+
+
+
+# Example #3 - Dependency Resolution:
+# --------
+# The following operations show that the when a task is enqueued, all its dependencies are also added.
+
+# 1. Enqueue: user_id=1, provider="credit_check", timestamp='2025-10-20 12:00:00'  -> 2 (queue size)
+# 2. Dequeue -> {"user_id": 1, "provider": "companies_house"}  
+# 3. Dequeue -> {"user_id": 1, "provider": "credit_check"}
+
+def test_dependency_resolution() -> None:
+    run_queue([
+        call_enqueue("credit_check", 1, iso_ts(delta_minutes=0)).expect(2),
+        call_dequeue().expect("companies_house", 1),
+        call_dequeue().expect("credit_check", 1),
+    ])
 
