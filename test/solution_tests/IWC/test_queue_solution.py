@@ -88,9 +88,8 @@ from .utils import call_dequeue, call_enqueue, call_size, iso_ts, run_queue
 def test_priority_duplicated_tasks() -> None:
     run_queue([
         call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
-        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=5)).expect(2),
-        call_enqueue("id_verification", 1, iso_ts(delta_minutes=5)).expect(3),
-        call_dequeue().expect("bank_statements", 1),
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=5)).expect(1),
+        call_enqueue("id_verification", 1, iso_ts(delta_minutes=5)).expect(2),
         call_dequeue().expect("bank_statements", 1),
         call_dequeue().expect("id_verification", 1),
     ])
