@@ -123,5 +123,11 @@ def test_priority_duplicated_tasks_with_dependencies_and_with_different_user_ids
     ])
 
 
-def test_priority_duplicated_tasks_with_different_timestamps_and_different_user_ids() -> None:
-    
+def test_duplicate_keeps_older_timestamp() -> None:
+  run_queue([
+      call_enqueue("bank_statements", 1, iso_ts(delta_minutes=5)).expect(1),  # newer first
+      call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),  # older second -> kept for ordering
+      call_enqueue("bank_statements", 2, iso_ts(delta_minutes=3)).expect(2),
+      call_dequeue().expect("bank_statements", 1),  # t=0 beats t=3
+      call_dequeue().expect("bank_statements", 2),
+  ])
