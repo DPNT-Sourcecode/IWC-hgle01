@@ -45,11 +45,14 @@ def test_dependency_resolution() -> None:
     ])
 
 
-def test_priority_resolution() -> None:
+def test_priority_resolution_with_dependencies_() -> None:
     run_queue([
-        call_enqueue("credit_check", 1, iso_ts(delta_minutes=10)).expect(1),
-        call_enqueue("id_verification", 1, iso_ts(delta_minutes=10)).expect(2),
+        call_enqueue("credit_check", 1, iso_ts(delta_minutes=10)).expect(2),
+        call_enqueue("id_verification", 1, iso_ts(delta_minutes=10)).expect(3),
         call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(4),
         call_dequeue().expect("companies_house", 1),
-        call_dequeue().expect("companies_house", 1),
+        call_dequeue().expect("credit_check", 1),
+        call_dequeue().expect("id_verification", 1),
+        call_dequeue().expect("bank_statements", 2),
+    ])
 
