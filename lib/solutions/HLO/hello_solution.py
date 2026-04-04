@@ -2,5 +2,6 @@
 class HelloSolution:
     
     # friend_name = unicode string
-    def hello(self, friend_name):
-        return f"Hello, {friend_name}!"
+    def hello(self, friend_name: str) -> str:
+        return f"Hello to the world, {friend_name}!"
+
