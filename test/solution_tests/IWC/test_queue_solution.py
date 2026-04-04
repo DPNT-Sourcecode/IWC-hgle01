@@ -109,7 +109,7 @@ def test_priority_duplicated_tasks_with_different_user_ids() -> None:
     ])
 
 
-def test_priority_duplicated_tasks_with_different_user_ids() -> None:
+def test_priority_duplicated_tasks_with_dependencies_and_with_different_user_ids() -> None:
     run_queue([
         call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
         call_enqueue("companies_house", 1, iso_ts(delta_minutes=5)).expect(2),
@@ -121,3 +121,7 @@ def test_priority_duplicated_tasks_with_different_user_ids() -> None:
         call_dequeue().expect("credit_check", 1),
         call_dequeue().expect("id_verification", 2),
     ])
+
+
+def test_priority_duplicated_tasks_with_different_timestamps_and_different_user_ids() -> None:
+    
