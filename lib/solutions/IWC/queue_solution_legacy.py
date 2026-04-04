@@ -101,11 +101,10 @@ class Queue:
             for existing_item in self._queue:
                 if existing_item.user_id == task.user_id and existing_item.provider == task.provider:
                     if existing_item.timestamp > task.timestamp:
-                        self._queue.remove(existing_item)
-                        self._queue.append(task)
-                    continue
-
-            self._queue.append(task)
+                        existing_item.timestamp = task.timestamp
+                    break
+            else:
+                self._queue.append(task)
         return self.size
 
     def dequeue(self):

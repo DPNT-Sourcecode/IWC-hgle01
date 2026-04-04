@@ -131,3 +131,12 @@ def test_duplicate_keeps_older_timestamp() -> None:
       call_dequeue().expect("bank_statements", 1),  # t=0 beats t=3
       call_dequeue().expect("bank_statements", 2),
   ])
+
+
+def test_duplicate_does_nt_trigger_rule_of_three() -> None:
+    run_queue([
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue("id_verification", 1, iso_ts(delta_minutes=0)).expect(2),
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=5)).expect(2),
+        call_enqueue("companies_house", 1, iso_ts(delta_minutes=5)).expect(2),
+    ])
