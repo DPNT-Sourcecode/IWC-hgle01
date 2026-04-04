@@ -45,13 +45,35 @@ def test_dependency_resolution() -> None:
     ])
 
 
-def test_priority_resolution_with_dependencies_() -> None:
+def test_priority_resolution_with_dependencies_and_three_tasks_and_different_timestamps() -> None:
     run_queue([
         call_enqueue("credit_check", 1, iso_ts(delta_minutes=10)).expect(2),
         call_enqueue("id_verification", 1, iso_ts(delta_minutes=10)).expect(3),
         call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(4),
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("credit_check", 1),
+        call_dequeue().expect("id_verification", 1),
+        call_dequeue().expect("bank_statements", 2),
+    ])
+
+
+def test_priority_resolution_with_dependencies_and_different_timestamps() -> None:
+    run_queue([
+        call_enqueue("credit_check", 1, iso_ts(delta_minutes=10)).expect(2),
+        call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(3),
+        call_dequeue().expect("bank_statements", 2),
+        call_dequeue().expect("companies_house", 1),
+        call_dequeue().expect("credit_check", 1),
+    ])
+
+def test_priority_dependencies_and_rule_of_three_tasks() -> None:
+    run_queue([
+        call_enqueue("credit_check", 1, iso_ts(delta_minutes=10)).expect(2),
+        call_enqueue("credit_check", 2, iso_ts(delta_minutes=20)).expect(4),
+        call_enqueue("id_verification", 2, iso_ts(delta_minutes=50)).expect(5),
+        call_dequeue().expect("companies_house", 2),
+        call_dequeue().expect("credit_check", 2),
+        call_enqueue("id_verification", 2, iso_ts(delta_minutes=50)).expect(5),
         call_dequeue().expect("id_verification", 1),
         call_dequeue().expect("bank_statements", 2),
     ])
