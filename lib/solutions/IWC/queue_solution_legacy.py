@@ -100,8 +100,7 @@ class Queue:
             
             for existing_item in self._queue:
                 if existing_item.user_id == task.user_id and existing_item.provider == task.provider:
-                    breakpoint()
-                    if existing_item.timestamp < task.timestamp:
+                    if existing_item.timestamp > task.timestamp:
                         self._queue.remove(existing_item)
                         self._queue.append(task)
                     continue
@@ -251,5 +250,6 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
