@@ -15,6 +15,3 @@ class TestSum():
     @pytest.mark.parametrize("x, y", [(0, 0), (100, 0), (0, 100), (100, 100), (50, 50)])
     def test_sum_in_range(self, x, y):
         assert SumSolution().compute(x, y) == x + y
-
-
-
