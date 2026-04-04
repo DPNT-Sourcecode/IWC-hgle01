@@ -91,15 +91,16 @@ class Queue:
         return timestamp
 
     def enqueue(self, item: TaskSubmission) -> int:
-        if any(existing_item.user_id == item.user_id and existing_item.provider == item.provider for existing_item in self._queue):
-            return self.size
-
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
             metadata = task.metadata
             metadata.setdefault("priority", Priority.NORMAL)
             metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+            
+            if any(existing_item.user_id == task.user_id and existing_item.provider == task.provider for existing_item in self._queue):
+                continue
+
             self._queue.append(task)
         return self.size
 
