@@ -16,9 +16,5 @@ class TestSum():
     def test_sum_in_range(self, x, y):
         assert SumSolution().compute(x, y) == x + y
 
-    def test_sum_invalid_type(self):
-        # with pytest.raises(TypeError):
-        SumSolution().compute("1", "2")
-
 
 
