@@ -90,6 +90,8 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
 
+    def _find_in_queue()
+
     def enqueue(self, item: TaskSubmission) -> int:
         tasks = [*self._collect_dependencies(item), item]
 
@@ -100,7 +102,7 @@ class Queue:
             
             for existing_item in self._queue:
                 if existing_item.user_id == task.user_id and existing_item.provider == task.provider:
-                    if existing_item.timestamp > task.timestamp:
+                    if self._timestamp_for_task(existing_item) > self._timestamp_for_task(task):
                         existing_item.timestamp = task.timestamp
                     break
             else:
@@ -249,3 +251,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
