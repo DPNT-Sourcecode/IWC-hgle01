@@ -90,16 +90,25 @@ class Queue:
             return datetime.fromisoformat(timestamp).replace(tzinfo=None)
         return timestamp
 
-    def _find_in_queue()
+    def _find_in_queue(self, user_id: int, provider: str) -> TaskSubmission | None:
+        return next(
+            (t for t in self._queue if t.user_id == user_id and t.provider == provider),
+            None
+        )
 
     def enqueue(self, item: TaskSubmission) -> int:
         tasks = [*self._collect_dependencies(item), item]
 
         for task in tasks:
-            metadata = task.metadata
-            metadata.setdefault("priority", Priority.NORMAL)
-            metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
-            
+            existing_item = self._find_in_queue(task.user_id, task.provider)
+            if existing_item is not None:
+                if self._timestamp_for_task(existing_item) > self._timestamp_for_task(task):
+                    existing_item.timestamp = task.timestamp
+            else:
+                metadata = task.metadata
+                metadata.setdefault("priority", Priority.NORMAL)
+                metadata.setdefault("group_earliest_timestamp", MAX_TIMESTAMP)
+                
             for existing_item in self._queue:
                 if existing_item.user_id == task.user_id and existing_item.provider == task.provider:
                     if self._timestamp_for_task(existing_item) > self._timestamp_for_task(task):
@@ -251,4 +260,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
