@@ -162,6 +162,9 @@ class Queue:
                 metadata["priority"] = priority_level
 
         queue_age = self.age
+        older_bank_statements = [t for t in self._queue if t.provider == "bank_statements" and (self.age - self._timestamp_for_task(t.timestamp)).total_seconds() >= BANK_STATEMENTS_AGE_THRESHOLD.total_seconds()]
+        if queue_age >= BANK_STATEMENTS_AGE_THRESHOLD.total_seconds():
+
 
         self._queue.sort(
             key=lambda i: (
@@ -277,5 +280,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-

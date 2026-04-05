@@ -223,4 +223,3 @@ def test_priority_when_queue_age_is_greater_than_5_minutes_and_there_is_a_tie() 
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("companies_house", 3),
     ])
-
