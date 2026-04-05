@@ -52,9 +52,9 @@ def test_priority_resolution_with_dependencies_and_three_tasks_and_different_tim
         call_enqueue("id_verification", 1, iso_ts(delta_minutes=10)).expect(3),
         call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(4),
         call_dequeue().expect("companies_house", 1),
+        call_dequeue().expect("bank_statements", 2),
         call_dequeue().expect("credit_check", 1),
         call_dequeue().expect("id_verification", 1),
-        call_dequeue().expect("bank_statements", 2),
     ])
 
 
@@ -223,3 +223,4 @@ def test_priority_when_queue_age_is_greater_than_5_minutes_and_there_is_a_tie() 
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("companies_house", 3),
     ])
+
