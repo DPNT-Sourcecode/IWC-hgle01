@@ -180,6 +180,10 @@ class Queue:
 
     @property
     def age(self):
+        if self.size == 0:
+            return 0
+
+        
         return 0
 
     def purge(self):
@@ -269,6 +273,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
