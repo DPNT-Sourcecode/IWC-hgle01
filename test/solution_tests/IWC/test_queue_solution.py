@@ -152,3 +152,5 @@ def test_priority_duplicated_tasks_with_different_user_ids() -> None:
         call_dequeue().expect("credit_check", 1),
         call_dequeue().expect("id_verification", 2),
     ])
+
+def test_priority_bank
