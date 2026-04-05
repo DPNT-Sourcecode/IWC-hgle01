@@ -178,7 +178,7 @@ class Queue:
         for task in ordered_tasks:
             while bank_statement_index < len(older_bank_statements):
                 bank_statement = older_bank_statements[bank_statement_index]
-                if self._timestamp_for_task(bank_statement) < self._timestamp_for_task(task):
+                if self._timestamp_for_task(bank_statement) <= self._timestamp_for_task(task):
                     result.append(bank_statement)
                     bank_statement_index += 1
                 else:
@@ -293,3 +293,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
