@@ -147,9 +147,9 @@ def test_priority_duplicated_tasks_with_different_user_ids() -> None:
         call_enqueue("credit_check", 1, iso_ts(delta_minutes=5)).expect(3),
         call_enqueue("id_verification", 2, iso_ts(delta_minutes=5)).expect(4),
         call_enqueue("id_verification", 2, iso_ts(delta_minutes=5)).expect(4),
-        call_dequeue().expect("bank_statements", 1),
         call_dequeue().expect("companies_house", 1),
         call_dequeue().expect("credit_check", 1),
+        call_dequeue().expect("bank_statements", 1),
         call_dequeue().expect("id_verification", 2),
     ])
 
@@ -169,4 +169,18 @@ def test_priority_when_bank_statements_is_queued_and_then_credit_check_is_queued
         call_dequeue().expect("id_verification", 1),
         call_dequeue().expect("companies_house", 2),
         call_dequeue().expect("bank_statements", 1),
+    ])
+
+
+def test_priority_when_only_bank_statements_are_queued() -> None:
+    run_queue([
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(2),
+        call_enqueue("bank_statements", 3, iso_ts(delta_minutes=0)).expect(3),
+        call_enqueue("credit_check", 2, iso_ts(delta_minutes=0)).expect(5),
+        call_dequeue().expect("companies_house", 2),
+        call_dequeue().expect("credit_check", 2),
+        call_dequeue().expect("bank_statements", 2),
+        call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("bank_statements", 3),
     ])
