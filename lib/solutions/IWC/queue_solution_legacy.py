@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import IntEnum
 
 # LEGACY CODE ASSET
@@ -47,6 +47,8 @@ REGISTERED_PROVIDERS: list[Provider] = [
     CREDIT_CHECK_PROVIDER,
     ID_VERIFICATION_PROVIDER,
 ]
+
+BANK_STATEMENTS_AGE_THRESHOLD = timedelta(minutes=5)
 
 class Queue:
     def __init__(self):
@@ -158,6 +160,8 @@ class Queue:
             else:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
+
+        queue_age = self.age
 
         self._queue.sort(
             key=lambda i: (
@@ -273,4 +277,5 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
