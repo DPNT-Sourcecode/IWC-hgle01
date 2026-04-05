@@ -121,8 +121,8 @@ class Queue:
         for user_id in user_ids:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
             sorted_timestamps = sorted(user_tasks, key=lambda t: t.timestamp)
-            earliest_timestamp = [0].timestamp
-            latest_timestamp = 
+            earliest_timestamp = sorted_timestamps[0].timestamp
+            latest_timestamp = sorted_timestamps[-1].timestamp
             priority_timestamps[user_id] = earliest_timestamp
             task_count[user_id] = len(user_tasks)
 
@@ -255,6 +255,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
