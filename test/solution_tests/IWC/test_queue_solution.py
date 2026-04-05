@@ -237,7 +237,7 @@ def test_priority_bank_statement_2() -> None:
         call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(2),
         call_enqueue("id_verification", 6, iso_ts(delta_minutes=6)).expect(3),
         call_dequeue().expect("companies_house", 1),
-        call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("bank_statements", 1), # time-sensitive (6 min old), t+0 < t+6
         call_dequeue().expect("id_verification", 6),
     ])
 
