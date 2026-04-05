@@ -153,4 +153,20 @@ def test_priority_duplicated_tasks_with_different_user_ids() -> None:
         call_dequeue().expect("id_verification", 2),
     ])
 
-def test_priority_bank
+# Example:
+# --------
+# 1. Enqueue: user_id=1, provider="bank_statements", timestamp='2025-10-20 12:00:00' -> 1 (queue size)
+# 2. Enqueue: user_id=1, provider="id_verification", timestamp='2025-10-20 12:01:00' -> 2 (queue size)  
+# 3. Enqueue: user_id=2, provider="companies_house", timestamp='2025-10-20 12:02:00' -> 3 (queue size)  
+# 4. Dequeue -> {"user_id": 1, "provider": "id_verification"}  
+# 5. Dequeue -> {"user_id": 2, "provider": "companies_house"}  
+# 6. Dequeue -> {"user_id": 1, "provider": "bank_statements"}  
+def test_priority_when_bank_statements_is_queued_and_then_credit_check_is_queued() -> None:
+    run_queue([
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue("id_verification", 1, iso_ts(delta_minutes=1)).expect(2),
+        call_enqueue("companies_house", 2, iso_ts(delta_minutes=2)).expect(3),
+        call_dequeue().expect("id_verification", 1),
+        call_dequeue().expect("companies_house", 2),
+        call_dequeue().expect("bank_statements", 1),
+    ])

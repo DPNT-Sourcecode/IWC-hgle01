@@ -120,7 +120,9 @@ class Queue:
         priority_timestamps = {}
         for user_id in user_ids:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
-            earliest_timestamp = sorted(user_tasks, key=lambda t: t.timestamp)[0].timestamp
+            sorted_timestamps = sorted(user_tasks, key=lambda t: t.timestamp)
+            earliest_timestamp = [0].timestamp
+            latest_timestamp = 
             priority_timestamps[user_id] = earliest_timestamp
             task_count[user_id] = len(user_tasks)
 
