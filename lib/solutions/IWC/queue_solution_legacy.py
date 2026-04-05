@@ -89,7 +89,7 @@ class Queue:
 
 
     @staticmethod
-    def _timestamp_for_task(task):
+    def _timestamp_for_task(task) -> datetime:
         timestamp = task.timestamp
         if isinstance(timestamp, datetime):
             return timestamp.replace(tzinfo=None)
@@ -183,7 +183,8 @@ class Queue:
         if self.size == 0:
             return 0
 
-        
+        timestamps = [self._timestamp_for_task(task) for task in self._queue]
+
         return 0
 
     def purge(self):
@@ -273,6 +274,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
