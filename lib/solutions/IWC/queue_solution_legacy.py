@@ -184,7 +184,7 @@ class Queue:
             return 0
         timestamps = [self._timestamp_for_task(task) for task in self._queue]
 
-        return int((max(timestamps) - min(timestamps)
+        return int((max(timestamps) - min(timestamps)).total_seconds())
 
     def purge(self):
         self._queue.clear()
@@ -273,3 +273,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
