@@ -174,7 +174,18 @@ class Queue:
             )
         )
 
-        
+        result = []
+        bank_statement_index = 0
+        for task in other_tasks:
+            while bank_statement_index < len(older_bank_statements):
+                bank_statement = older_bank_statements[bank_statement_index]
+                if self._timestamp_for_task(bank_statement) < self._timestamp_for_task(task):
+                    result.append(bank_statement)
+                    bank_statement_index += 1
+                else:
+                    break
+            result.append(task)
+        result.extend(older_bank_statements[bank_statement_index:])
 
 
 
@@ -283,6 +294,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
