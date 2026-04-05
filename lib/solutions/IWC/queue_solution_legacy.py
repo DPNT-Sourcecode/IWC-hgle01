@@ -121,14 +121,14 @@ class Queue:
         for user_id in user_ids:
             user_tasks = [t for t in self._queue if t.user_id == user_id]
             non_bank_statements_tasks = [t for t in user_tasks if t.provider != "bank_statements"]
-
-            sorted_timestamps = sorted(user_tasks, key=lambda t: t.timestamp)
-            earliest_timestamp = sorted_timestamps[0].timestamp
+            tasks_for_reference = non_bank_statements_tasks  if non_bank_statements_tasks else user_tasks
+            earliest_timestamp = sorted(tasks_for_reference, key=lambda t: t.timestamp)[0].timestamp
             priority_timestamps[user_id] = earliest_timestamp
             task_count[user_id] = len(user_tasks)
 
         for task in self._queue:
             metadata = task.metadata
+            is_bank_statement = task.provider == "bank_statements"
             current_earliest = metadata.get("group_earliest_timestamp", MAX_TIMESTAMP)
             raw_priority = metadata.get("priority")
             try:
@@ -256,3 +256,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
