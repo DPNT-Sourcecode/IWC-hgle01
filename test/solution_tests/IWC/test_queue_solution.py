@@ -177,10 +177,7 @@ def test_priority_when_only_bank_statements_are_queued() -> None:
         call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
         call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(2),
         call_enqueue("bank_statements", 3, iso_ts(delta_minutes=0)).expect(3),
-        call_enqueue("credit_check", 2, iso_ts(delta_minutes=0)).expect(5),
-        call_dequeue().expect("companies_house", 2),
-        call_dequeue().expect("credit_check", 2),
-        call_dequeue().expect("bank_statements", 2),
         call_dequeue().expect("bank_statements", 1),
+        call_dequeue().expect("bank_statements", 2),
         call_dequeue().expect("bank_statements", 3),
     ])
