@@ -162,6 +162,7 @@ class Queue:
                 metadata["priority"] = priority_level
 
         latest_timestamp = max(self._timestamp_for_task(t) for t in self._queue)
+        breakpoint()
         older_bank_statements = [t for t in self._queue if t.provider == "bank_statements" and (latest_timestamp - self._timestamp_for_task(t.timestamp)).total_seconds() >= BANK_STATEMENTS_AGE_THRESHOLD.total_seconds()]
         other_tasks = [t for t in self._queue if t not in older_bank_statements]
 
@@ -187,9 +188,9 @@ class Queue:
             result.append(task)
         result.extend(older_bank_statements[bank_statement_index:])
 
+        task = result[0]
+        self._queue.remove(task)
 
-
-        task = self._queue.pop(0)
         return TaskDispatch(
             provider=task.provider,
             user_id=task.user_id,
@@ -294,6 +295,7 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
 
 
 
