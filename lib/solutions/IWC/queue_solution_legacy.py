@@ -161,10 +161,9 @@ class Queue:
                 metadata["group_earliest_timestamp"] = current_earliest
                 metadata["priority"] = priority_level
 
-        queue_age = self.age
-        older_bank_statements = [t for t in self._queue if t.provider == "bank_statements" and (self.age - self._timestamp_for_task(t.timestamp)).total_seconds() >= BANK_STATEMENTS_AGE_THRESHOLD.total_seconds()]
-        if queue_age >= BANK_STATEMENTS_AGE_THRESHOLD.total_seconds():
-
+        latest_timestamp = max(self._timestamp_for_task(t) for t in self._queue)
+        older_bank_statements = [t for t in self._queue if t.provider == "bank_statements" and (latest_timestamp - self._timestamp_for_task(t.timestamp)).total_seconds() >= BANK_STATEMENTS_AGE_THRESHOLD.total_seconds()]
+        other_tasks = [t for t in self._queue if t not in older_bank_statements]
 
         self._queue.sort(
             key=lambda i: (
@@ -280,3 +279,4 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
+
