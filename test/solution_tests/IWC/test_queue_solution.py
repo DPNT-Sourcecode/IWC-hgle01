@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .utils import call_dequeue, call_enqueue, call_size, iso_ts, run_queue
+from .utils import call_age, call_dequeue, call_enqueue, call_size, iso_ts, run_queue
 
 
 def test_enqueue_size_dequeue_flow() -> None:
@@ -180,4 +180,14 @@ def test_priority_when_only_bank_statements_are_queued() -> None:
         call_dequeue().expect("bank_statements", 1),
         call_dequeue().expect("bank_statements", 2),
         call_dequeue().expect("bank_statements", 3),
+    ])
+
+
+def test_get_age_of_queue() -> None:
+    run_queue([
+        call_enqueue("bank_statements", 1, iso_ts(delta_minutes=0)).expect(1),
+        call_enqueue("bank_statements", 2, iso_ts(delta_minutes=0)).expect(2),
+        call_enqueue("bank_statements", 3, iso_ts(delta_minutes=5)).expect(3),
+        call_age().expect(5),
+
     ])

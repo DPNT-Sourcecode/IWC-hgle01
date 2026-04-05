@@ -182,10 +182,9 @@ class Queue:
     def age(self):
         if self.size == 0:
             return 0
-
         timestamps = [self._timestamp_for_task(task) for task in self._queue]
 
-        return 0
+        return int((max(timestamps) - min(timestamps)
 
     def purge(self):
         self._queue.clear()
@@ -274,8 +273,3 @@ async def queue_worker():
         logger.info(f"Finished task: {task}")
 ```
 """
-
-
-
-
-
